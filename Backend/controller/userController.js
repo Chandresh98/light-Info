@@ -97,93 +97,86 @@ const getUser = async function (req, res) {
         if (!validator.isValidObjectId(userid)) {
             return res.status(400).send({ status: false, message: "Please provide valid userid" })
         }
-        if (req.decodedToken.UserId == userid) {
+        
             let u_details = await userModel.findOne({ _id: userid })
             if (!u_details) {
                 return res.status(404).send({ status: false, message: "user not found" })
             }
             return res.status(200).send({ status: true, Message: "successful", data: u_details })
-        } else {
-            return res.status(403).send({ status: false, message: "authorization denied" })
-        }
+       
 
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
     }
 }
 
-// with authrorization
-// const updateUser = async function (req, res) {
-// try{
-//     let data = req.body
-//     let filter = {}
-//     let userid = req.params.userId
-//         if (!validator.isValidObjectId(userid)) {
-//             return res.status(400).send({ status: false, message: "Please provide valid userid" })
-//         }
-//     if (Object.keys(data).length === 0) {
-//         return res.status(400).send({ status: false, message: "Please enter upadate Deatils" })
-//     }
-
-//     const { name, password } = data
-//     if (validator.isValid(name)) {
-//         filter['name']=name
-//     }
-
-    
-//     if (validator.isValid(password)) {
-//         if (password.length < 8 || password.length > 15) {
-//             return res.status(400).send({ status: false, massage: "please length should be 8 to 15 password" })
-//         }
-//             const hash = bcrypt.hashSync(password, 6);
-//             filter['password']=hash
-//     }
-
-//     if(req.decodedToken.UserId == userid){
-//         let upadateUs = await userModel.findOneAndUpdate({_id:userid},{$set:{filter}},{new:true})
-//         return res.status(200).send({status:true,message:"successful",data:upadateUs})
-//     }
-//     else {
-//         return res.status(403).send({ status: false, message: "authorization denied" })
-//     }
-     
-// } catch (error) {
-//         return res.status(500).send({ status: false, message: error.message })
-//     }
-// }
 
 const updateUser = async function (req, res) {
-    try{
-        let data = req.body
-        let filter = {}
+try{
+    let data = req.body
+    let filter = {}
+    let userid = req.params.userId
+        if (!validator.isValidObjectId(userid)) {
+            return res.status(400).send({ status: false, message: "Please provide valid userid" })
+        }
+
+    const { name, password } = data
+    if (validator.isValid(name)) {
+        filter['name']=name
+    }
+
+    
+    if (validator.isValid(password)) {
+        if (password.length < 8 || password.length > 15) {
+            return res.status(400).send({ status: false, massage: "please length should be 8 to 15 password" })
+        }
+            const hash = bcrypt.hashSync(password, 6);
+            filter['password']=hash
+    }
+ console.log(filter)
+   
+        let upadateUs = await userModel.findOneAndUpdate({_id:userid},{$set:filter},{new:true})
+        return res.status(200).send({status:true,message:"successful",data:upadateUs})
+   
+     
+} catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
+}
+
+// const updateUser = async function (req, res) {
+//     try{
+//         let data = req.body
+//         let userid =req.params.userId 
+//         let filter = {}
        
-        if (Object.keys(data).length === 0) {
-            return res.status(400).send({ status: false, message: "Please enter upadate Deatils" })
-        }
+//         if (Object.keys(data).length === 0) {
+//             return res.status(400).send({ status: false, message: "Please enter upadate Deatils" })
+//         }
     
-        const { name, password } = data
-        if (validator.isValid(name)) {
-            filter['name']=name
-        }
+//         const { name, password } = data
+//         if (validator.isValid(name)) {
+//             filter['name']=name
+//         }
         
         
         
-        if (validator.isValid(password)) {
-            if (password.length < 8 || password.length > 15) {
-                return res.status(400).send({ status: false, massage: "please length should be 8 to 15 password" })
-            }
-                const hash = bcrypt.hashSync(password, 6);
-                filter['password']=hash
-        }
+//         if (validator.isValid(password)) {
+//             if (password.length < 8 || password.length > 15) {
+//                 return res.status(400).send({ status: false, massage: "please length should be 8 to 15 password" })
+//             }
+//                 const hash = bcrypt.hashSync(password, 6);
+//                 filter['password']=hash
+//         }
     
-             let upadateUs = await userModel.findOneAndUpdate({},{$set:{filter}},{new:true})
-            return res.status(200).send({status:true,message:"successful",data:upadateUs})
+//              let upadateUs = await userModel.findOneAndUpdate({},{$set:{filter}},{new:true})
+//             return res.status(200).send({status:true,message:"successful",data:upadateUs})
         
          
-    } catch (error) {
-            return res.status(500).send({ status: false, message: error.message })
-        }
-    }
+//     } catch (error) {
+//             return res.status(500).send({ status: false, message: error.message })
+//         }
+//     }
     
 
 
